@@ -154,30 +154,30 @@ Table = list
 
 
 class OSRM:
-    def __init__(_, base_path, contraction=False):
-        _.config = None
-        _.osrm = None
+    def __init__(self, base_path, contraction=False):
+        self.config = None
+        self.osrm = None
 
-        _.config = lib.osrmc_config_construct(base_path, contraction, c.byref(osrmc_error()))
-        assert _.config
+        self.config = lib.osrmc_config_construct(base_path, contraction, c.byref(osrmc_error()))
+        assert self.config
 
-        _.osrm = lib.osrmc_osrm_construct(_.config, c.byref(osrmc_error()))
-        assert _.osrm
+        self.osrm = lib.osrmc_osrm_construct(self.config, c.byref(osrmc_error()))
+        assert self.osrm
 
-    def __del__(_):
-        if _.osrm:
-            lib.osrmc_osrm_destruct(_.osrm)
-        if _.config:
-            lib.osrmc_config_destruct(_.config)
+    def __del__(self):
+        if self.osrm:
+            lib.osrmc_osrm_destruct(self.osrm)
+        if self.config:
+            lib.osrmc_config_destruct(self.config)
 
-    def route(_, coordinates, csv_path):
+    def route(self, coordinates, csv_path):
         with scoped_route_params() as params:
             assert params
 
             for coordinate in coordinates:
                 lib.osrmc_params_add_coordinate(params, coordinate.longitude, coordinate.latitude, c.byref(osrmc_error()))
 
-            with scoped_route(_.osrm, params) as route:
+            with scoped_route(self.osrm, params) as route:
                 if route:
                     distance = lib.osrmc_route_response_distance(route, c.byref(osrmc_error()))
                     duration = lib.osrmc_route_response_duration(route, c.byref(osrmc_error()))
@@ -187,14 +187,14 @@ class OSRM:
                 else:
                     return None
 
-    def table(_, coordinates):
+    def table(self, coordinates):
         with scoped_table_params() as params:
             assert params
 
             for coordinate in coordinates:
                 lib.osrmc_params_add_coordinate(params, coordinate.longitude, coordinate.latitude, c.byref(osrmc_error()))
 
-            with scoped_table(_.osrm, params) as table:
+            with scoped_table(self.osrm, params) as table:
                 if table:
                     n = len(coordinates)  # Only symmetric version supported
                     return Table([(coordinates[s].id, coordinates[t].id,
