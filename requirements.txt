@@ -1,0 +1,3 @@
+numpy>=1.15
+pandas>=0.23
+jupyterlab>=0.35
