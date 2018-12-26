@@ -16,7 +16,7 @@ lib.osrmc_error_destruct.argtypes = [c.c_void_p]
 
 class osrmc_error(c.c_void_p):
     def __str__(self):
-        return lib.osrmc_error_message(self)
+        return lib.osrmc_error_message(self).decode('utf-8')
 
     def __del__(self):
         lib.osrmc_error_destruct(self)

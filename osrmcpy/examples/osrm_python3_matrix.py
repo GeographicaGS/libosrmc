@@ -16,7 +16,7 @@ def main():
 
     osrm = OSRM(sys.argv[1].encode('utf-8') if len(sys.argv) >= 2 else None, False)
 
-    # Somewhere in an area in Monaco..
+    # Monaco
     # bottom_left = Coordinate(longitude=7.413194, latitude=43.731056)
     # top_right = Coordinate(longitude=7.421639, latitude=43.735440)
     # Berlin
