@@ -118,4 +118,4 @@ no_git*.py
 credentials.json
 libosrmc/build/*
 data/test*
-osrmcpy/examples/geometries_output.csv
+geometries_output.csv
