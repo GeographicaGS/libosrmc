@@ -145,10 +145,7 @@ void osrmc_params_add_coordinate_with(osrmc_params_t params, float longitude, fl
 
 osrmc_route_params_t osrmc_route_params_construct(osrmc_error_t* error) try {
   auto* out = new osrm::RouteParameters;
-  out->steps = true;
   out->geometries = osrm::RouteParameters::GeometriesType::Polyline;
-  out->continue_straight = true;
-  out->overview = osrm::RouteParameters::OverviewType::Full;
 
   return reinterpret_cast<osrmc_route_params_t>(out);
 } catch (const std::exception& e) {
@@ -163,6 +160,24 @@ void osrmc_route_params_destruct(osrmc_route_params_t params) {
 void osrmc_route_params_add_steps(osrmc_route_params_t params, int on) {
   auto* params_typed = reinterpret_cast<osrm::RouteParameters*>(params);
   params_typed->steps = on;
+}
+
+void osrmc_route_params_add_continue_straight(osrmc_route_params_t params, int on) {
+  auto* params_typed = reinterpret_cast<osrm::RouteParameters*>(params);
+  params_typed->continue_straight = on;
+}
+
+void osrmc_route_params_add_overview_full(osrmc_route_params_t params, int on) {
+  auto* params_typed = reinterpret_cast<osrm::RouteParameters*>(params);
+
+  if (on)
+  {
+    params_typed->overview = osrm::RouteParameters::OverviewType::Full;
+  }
+  else
+  {
+    params_typed->overview = osrm::RouteParameters::OverviewType::Simplified;
+  }
 }
 
 void osrmc_route_params_add_alternatives(osrmc_route_params_t params, int on) {
