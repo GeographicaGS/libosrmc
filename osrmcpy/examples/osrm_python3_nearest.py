@@ -22,7 +22,7 @@ def main():
     nearest = osrm.nearest(coord)
 
     if nearest:
-        print('Latitude: {0}, Longitude: {1}'.format(nearest[0], nearest[1]))
+        print('Latitude: {0}, Longitude: {1}'.format(nearest.latitude, nearest.longitude))
 
     else:
         print('No nearest coordinates found')
