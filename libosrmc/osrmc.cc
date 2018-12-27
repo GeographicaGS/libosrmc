@@ -345,6 +345,56 @@ void osrmc_nearest_params_destruct(osrmc_nearest_params_t params) {
   delete reinterpret_cast<osrm::NearestParameters*>(params);
 }
 
+osrmc_nearest_response_t osrmc_nearest(osrmc_osrm_t osrm, osrmc_nearest_params_t params,
+                                       osrmc_error_t* error) try {
+  auto* osrm_typed = reinterpret_cast<osrm::OSRM*>(osrm);
+  auto* params_typed = reinterpret_cast<osrm::NearestParameters*>(params);
+
+  auto* out = new osrm::json::Object;
+  const auto status = osrm_typed->Nearest(*params_typed, *out);
+
+  if (status == osrm::Status::Ok)
+    return reinterpret_cast<osrmc_nearest_response_t>(out);
+
+  *error = new osrmc_error{"service request failed"};
+  return nullptr;
+} catch (const std::exception& e) {
+  *error = new osrmc_error{e.what()};
+  return nullptr;
+}
+
+void osrmc_nearest_response_destruct(osrmc_nearest_response_t response) {
+  delete reinterpret_cast<osrm::json::Object*>(response);
+}
+
+void osrmc_nearest_set_number_of_results(osrmc_nearest_params_t params, unsigned n) {
+  auto* params_typed = reinterpret_cast<osrm::NearestParameters*>(params);
+  params_typed->number_of_results = n;
+}
+
+void osrmc_nearest_response_coordinates(osrmc_nearest_response_t response, float* coords, osrmc_error_t* error) try {
+  auto* response_typed = reinterpret_cast<osrm::json::Object*>(response);
+
+  const auto& waypoints = response_typed->values["waypoints"].get<osrm::json::Array>().values;
+
+  for (const auto& waypoint : waypoints) {
+    const auto& waypoint_typed = waypoint.get<osrm::json::Object>();
+    const auto& location = waypoint_typed.values.at("location").get<osrm::json::Array>().values;
+
+    const auto longitude = location[0].get<osrm::json::Number>().value;
+    const auto latitude = location[1].get<osrm::json::Number>().value;
+
+    std::cout << "Nearest lat: " << latitude << '\n';
+    std::cout << "Nearest lon: " << longitude << '\n';
+
+    // float* coords = new float[2];
+    coords[0] = latitude;
+    coords[1] = longitude;
+  }
+} catch (const std::exception& e) {
+  *error = new osrmc_error{e.what()};
+}
+
 osrmc_match_params_t osrmc_match_params_construct(osrmc_error_t* error) try {
   auto* out = new osrm::MatchParameters;
   return reinterpret_cast<osrmc_match_params_t>(out);
@@ -355,11 +405,6 @@ osrmc_match_params_t osrmc_match_params_construct(osrmc_error_t* error) try {
 
 void osrmc_match_params_destruct(osrmc_match_params_t params) {
   delete reinterpret_cast<osrm::MatchParameters*>(params);
-}
-
-void osrmc_nearest_set_number_of_results(osrmc_nearest_params_t params, unsigned n) {
-  auto* params_typed = reinterpret_cast<osrm::NearestParameters*>(params);
-  params_typed->number_of_results = n;
 }
 
 void osrmc_match_params_add_timestamp(osrmc_match_params_t params, unsigned timestamp, osrmc_error_t* error) try {
