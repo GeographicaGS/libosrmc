@@ -82,6 +82,15 @@ lib.osrmc_route_params_construct.restype = c.c_void_p
 lib.osrmc_route_params_construct.argtypes = [c.c_void_p]
 lib.osrmc_route_params_construct.errcheck = osrmc_error_errcheck
 
+lib.osrmc_route_params_add_steps.restype = c.c_void_p
+lib.osrmc_route_params_add_steps.argtypes = [c.c_void_p, c.c_int]
+
+lib.osrmc_route_params_add_overview_full.restype = c.c_void_p
+lib.osrmc_route_params_add_overview_full.argtypes = [c.c_void_p, c.c_int]
+
+lib.osrmc_route_params_add_continue_straight.restype = c.c_void_p
+lib.osrmc_route_params_add_continue_straight.argtypes = [c.c_void_p, c.c_int]
+
 lib.osrmc_route_params_destruct.restype = None
 lib.osrmc_route_params_destruct.argtypes = [c.c_void_p]
 
@@ -233,9 +242,15 @@ class OSRM:
         if self.config:
             lib.osrmc_config_destruct(self.config)
 
-    def route(self, coordinates, csv_path=None):
+    def route(self, coordinates, csv_path=None, full_geom=True, continue_straight=True):
         with scoped_route_params() as params:
             assert params
+
+            lib.osrmc_route_params_add_continue_straight(params, int(continue_straight))
+            lib.osrmc_route_params_add_overview_full(params, int(full_geom))
+
+            add_steps = 1 if csv_path else 0
+            lib.osrmc_route_params_add_steps(params, add_steps)
 
             for coordinate in coordinates:
                 lib.osrmc_params_add_coordinate(params, coordinate.longitude, coordinate.latitude, c.byref(osrmc_error()))

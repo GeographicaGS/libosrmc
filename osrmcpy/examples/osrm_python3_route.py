@@ -22,7 +22,7 @@ def main():
     end = Coordinate(id=None, longitude=-6.462316552050708, latitude=53.31210678760515)
 
     csv_path = "geometries_output.csv"
-    route = osrm.route([start, end], csv_path.encode('utf-8'))
+    route = osrm.route([start, end], csv_path=csv_path.encode('utf-8'))
 
     if route:
         print(route)
