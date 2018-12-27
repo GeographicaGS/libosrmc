@@ -100,9 +100,31 @@ lib.osrmc_table_response_destruct.argtypes = [c.c_void_p]
 lib.osrmc_table_response_duration.restype = c.c_float
 lib.osrmc_table_response_duration.argtypes = [c.c_void_p, c.c_ulong, c.c_ulong, c.c_void_p]
 lib.osrmc_table_response_duration.errcheck = osrmc_error_errcheck
+
 lib.osrmc_table_response_distance.restype = c.c_float
 lib.osrmc_table_response_distance.argtypes = [c.c_void_p, c.c_ulong, c.c_ulong, c.c_void_p]
 lib.osrmc_table_response_distance.errcheck = osrmc_error_errcheck
+
+# Nearest Params
+lib.osrmc_nearest_params_construct.restype = c.c_void_p
+lib.osrmc_nearest_params_construct.argtypes = [c.c_void_p]
+lib.osrmc_nearest_params_construct.errcheck = osrmc_error_errcheck
+
+lib.osrmc_nearest_params_destruct.restype = None
+lib.osrmc_nearest_params_destruct.argtypes = [c.c_void_p]
+
+# Nearest
+lib.osrmc_nearest.restype = c.c_void_p
+lib.osrmc_nearest.argtypes = [c.c_void_p, c.c_void_p, c.c_void_p]
+lib.osrmc_nearest.errcheck = osrmc_error_errcheck
+
+lib.osrmc_nearest_response_destruct.restype = None
+lib.osrmc_nearest_response_destruct.argtypes = [c.c_void_p]
+
+lib.osrmc_nearest_response_coordinates.restype = c.c_void_p
+# lib.osrmc_nearest_response_coordinates.restype = c.c_void_p
+lib.osrmc_nearest_response_coordinates.argtypes = [c.c_void_p, c.c_float * 2, c.c_void_p]
+lib.osrmc_nearest_response_coordinates.errcheck = osrmc_error_errcheck
 
 
 # Python Library Interface
@@ -146,6 +168,20 @@ def scoped_table(osrm, params):
     route = lib.osrmc_table(osrm, params, c.byref(osrmc_error()))
     yield route
     lib.osrmc_table_response_destruct(route)
+
+
+@contextmanager
+def scoped_nearest_params():
+    params = lib.osrmc_nearest_params_construct(c.byref(osrmc_error()))
+    yield params
+    lib.osrmc_nearest_params_destruct(params)
+
+
+@contextmanager
+def scoped_nearest(osrm, params):
+    nearest = lib.osrmc_nearest(osrm, params, c.byref(osrmc_error()))
+    yield nearest
+    lib.osrmc_nearest_response_destruct(nearest)
 
 
 Coordinate = namedtuple('Coordinate', 'id longitude latitude')
@@ -201,5 +237,19 @@ class OSRM:
                                    lib.osrmc_table_response_duration(table, s, t, c.byref(osrmc_error())),
                                    lib.osrmc_table_response_distance(table, s, t, c.byref(osrmc_error()))
                                    ) for t in range(n)] for s in range(n))
+                else:
+                    return None
+
+    def nearest(self, coordinate):
+        with scoped_nearest_params() as params:
+            assert params
+
+            lib.osrmc_params_add_coordinate(params, coordinate.longitude, coordinate.latitude, c.byref(osrmc_error()))
+
+            with scoped_nearest(self.osrm, params) as nearest:
+                if nearest:
+                    nearest_coord = (c.c_float * 2)()
+                    lib.osrmc_nearest_response_coordinates(nearest, nearest_coord, c.byref(osrmc_error()))
+                    return nearest_coord
                 else:
                     return None

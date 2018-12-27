@@ -151,6 +151,7 @@ typedef struct osrmc_match_params* osrmc_match_params_t;
 
 typedef struct osrmc_route_response* osrmc_route_response_t;
 typedef struct osrmc_table_response* osrmc_table_response_t;
+typedef struct osrmc_nearest_response* osrmc_nearest_response_t;
 
 /* Service-specific callbacks */
 
@@ -211,6 +212,10 @@ OSRMC_API float osrmc_table_response_distance(osrmc_table_response_t response, u
 OSRMC_API osrmc_nearest_params_t osrmc_nearest_params_construct(osrmc_error_t* error);
 OSRMC_API void osrmc_nearest_params_destruct(osrmc_nearest_params_t params);
 OSRMC_API void osrmc_nearest_set_number_of_results(osrmc_nearest_params_t params, unsigned n, osrmc_error_t* error);
+
+OSRMC_API osrmc_nearest_response_t osrmc_nearest(osrmc_osrm_t osrm, osrmc_nearest_params_t params, osrmc_error_t* error);
+OSRMC_API void osrmc_nearest_response_destruct(osrmc_nearest_response_t response);
+OSRMC_API void osrmc_nearest_response_coordinates(osrmc_nearest_response_t response, float* coords, osrmc_error_t* error);
 
 /* Match service */
 
