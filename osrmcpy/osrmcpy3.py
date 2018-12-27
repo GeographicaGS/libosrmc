@@ -122,7 +122,6 @@ lib.osrmc_nearest_response_destruct.restype = None
 lib.osrmc_nearest_response_destruct.argtypes = [c.c_void_p]
 
 lib.osrmc_nearest_response_coordinates.restype = c.c_void_p
-# lib.osrmc_nearest_response_coordinates.restype = c.c_void_p
 lib.osrmc_nearest_response_coordinates.argtypes = [c.c_void_p, c.c_float * 2, c.c_void_p]
 lib.osrmc_nearest_response_coordinates.errcheck = osrmc_error_errcheck
 
@@ -206,7 +205,7 @@ class OSRM:
         if self.config:
             lib.osrmc_config_destruct(self.config)
 
-    def route(self, coordinates, csv_path):
+    def route(self, coordinates, csv_path=None):
         with scoped_route_params() as params:
             assert params
 
@@ -218,7 +217,10 @@ class OSRM:
                     distance = lib.osrmc_route_response_distance(route, c.byref(osrmc_error()))
                     duration = lib.osrmc_route_response_duration(route, c.byref(osrmc_error()))
                     geometry = lib.osrmc_route_response_geometry(route, c.byref(osrmc_error()))
-                    lib.osrmc_route_response_geometry_legs(route, csv_path, c.byref(osrmc_error()))
+
+                    if csv_path:
+                        lib.osrmc_route_response_geometry_legs(route, csv_path, c.byref(osrmc_error()))
+
                     return Route(distance=distance, duration=duration, geometry=geometry)
                 else:
                     return None

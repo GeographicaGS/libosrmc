@@ -255,7 +255,7 @@ void osrmc_route_response_geometry_legs(osrmc_route_response_t response, const c
           const auto step_dist = step_object.values.at("distance").get<osrm::json::Number>().value;
           const auto step_dur = step_object.values.at("duration").get<osrm::json::Number>().value;
           const auto step_geom = step_object.values.at("geometry").get<osrm::json::String>().value;
-          // std::cout << "leg step geometry: " << step_geom << '\n';
+
           pFile << step_ct << "," << step_dist << "," << step_dur << "," << step_geom << std::endl;
 
           ++step_ct;
