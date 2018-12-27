@@ -19,13 +19,15 @@
 
 #include "osrmc.h"
 
-/* ABI stability */
+/** ABI stability **/
 
 unsigned osrmc_get_version(void) { return OSRMC_VERSION; }
 
 int osrmc_is_abi_compatible(void) { return osrmc_get_version() >> 16u == OSRMC_VERSION_MAJOR; }
 
-/* API */
+/** API **/
+
+/* Error handling */
 
 struct osrmc_error final {
   std::string message;
@@ -34,6 +36,9 @@ struct osrmc_error final {
 const char* osrmc_error_message(osrmc_error_t error) { return error->message.c_str(); }
 
 void osrmc_error_destruct(osrmc_error_t error) { delete error; }
+
+
+/* Config and osrmc */
 
 osrmc_config_t osrmc_config_construct(const char* base_path, const bool contraction, osrmc_error_t* error) try {
   auto* out = new osrm::EngineConfig;
@@ -77,6 +82,9 @@ osrmc_osrm_t osrmc_osrm_construct(osrmc_config_t config, osrmc_error_t* error) t
 
 void osrmc_osrm_destruct(osrmc_osrm_t osrm) { delete reinterpret_cast<osrm::OSRM*>(osrm); }
 
+
+/* Generic parameters */
+
 void osrmc_params_add_coordinate(osrmc_params_t params, float longitude, float latitude, osrmc_error_t* error) try {
   auto* params_typed = reinterpret_cast<osrm::engine::api::BaseParameters*>(params);
 
@@ -103,6 +111,9 @@ void osrmc_params_add_coordinate_with(osrmc_params_t params, float longitude, fl
 } catch (const std::exception& e) {
   *error = new osrmc_error{e.what()};
 }
+
+
+/* Route service */
 
 osrmc_route_params_t osrmc_route_params_construct(osrmc_error_t* error) try {
   auto* out = new osrm::RouteParameters;
@@ -254,8 +265,10 @@ void osrmc_route_response_geometry_legs(osrmc_route_response_t response, const c
 
 } catch (const std::exception& e) {
   *error = new osrmc_error{e.what()};
-  // return nullptr;
 }
+
+
+/* Table service */
 
 osrmc_table_params_t osrmc_table_params_construct(osrmc_error_t* error) try {
   auto* out = new osrm::TableParameters;
@@ -333,6 +346,9 @@ float osrmc_table_response_distance(osrmc_table_response_t response, unsigned lo
   return INFINITY;
 }
 
+
+/* Nearest service */
+
 osrmc_nearest_params_t osrmc_nearest_params_construct(osrmc_error_t* error) try {
   auto* out = new osrm::NearestParameters;
   return reinterpret_cast<osrmc_nearest_params_t>(out);
@@ -384,16 +400,15 @@ void osrmc_nearest_response_coordinates(osrmc_nearest_response_t response, float
     const auto longitude = location[0].get<osrm::json::Number>().value;
     const auto latitude = location[1].get<osrm::json::Number>().value;
 
-    std::cout << "Nearest lat: " << latitude << '\n';
-    std::cout << "Nearest lon: " << longitude << '\n';
-
-    // float* coords = new float[2];
     coords[0] = latitude;
     coords[1] = longitude;
   }
 } catch (const std::exception& e) {
   *error = new osrmc_error{e.what()};
 }
+
+
+/* Match service */
 
 osrmc_match_params_t osrmc_match_params_construct(osrmc_error_t* error) try {
   auto* out = new osrm::MatchParameters;
