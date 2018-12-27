@@ -81,7 +81,7 @@ You can test it with this examples:
 
 ## License
 
-Copyright © 2018 Cayetano Benavent - Geographica (Python3 binding; more functionalities to C Inteface)
+Copyright © 2018 Cayetano Benavent - Geographica (Python3 binding; more functionalities to C/C++ Interface)
 
 Copyright © 2016 Daniel J. Hofmann (Creator of libosrmc project)
 
