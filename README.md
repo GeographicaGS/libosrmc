@@ -21,7 +21,8 @@ $ docker-compose up
 
 And and use these examples through JupyterLab in ```http://localhost:8888```:
 - notebooks/osrmcpy_compute_matrix.ipynb.
-- notebooks/osrmcpy_compute_route.ipynb
+- notebooks/osrmcpy_compute_route.ipynb.
+- notebooks/osrmcpy_compute_nearest.ipynb.
 
 Before to use examples you must prepare test datasets (see Data processing).
 
@@ -75,7 +76,8 @@ $ python -m pip install .
 
 You can test it with this examples:
 - osrmcpy/examples/osrm_python3_matrix.py.
-- osrmcpy/examples/osrm_python3_route.py
+- osrmcpy/examples/osrm_python3_route.py.
+- osrmcpy/examples/osrm_python3_nearest.py.
 
 ## License
 
