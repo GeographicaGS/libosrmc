@@ -149,7 +149,7 @@ extern "C" {
 #endif
 
 #define OSRMC_VERSION_MAJOR 5
-#define OSRMC_VERSION_MINOR 21
+#define OSRMC_VERSION_MINOR 22
 #define OSRMC_VERSION ((OSRMC_VERSION_MAJOR << 16) | OSRMC_VERSION_MINOR)
 
 OSRMC_API unsigned osrmc_get_version(void);

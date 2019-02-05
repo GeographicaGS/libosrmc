@@ -1,7 +1,7 @@
 FROM python:3.6.7
 
 # Environment
-ENV OSRM_VERSION 5.21.0
+ENV OSRM_VERSION 5.22.0
 ENV LD_LIBRARY_PATH=/usr/local/lib
 ENV BUILD_DIR /usr/src
 
