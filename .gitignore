@@ -119,3 +119,4 @@ credentials.json
 libosrmc/build/*
 data/test*
 geometries_output.csv
+data/profiles/
