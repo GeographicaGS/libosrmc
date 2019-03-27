@@ -201,9 +201,9 @@ def scoped_table_params():
 
 @contextmanager
 def scoped_table(osrm, params):
-    route = lib.osrmc_table(osrm, params, c.byref(osrmc_error()))
-    yield route
-    lib.osrmc_table_response_destruct(route)
+    table = lib.osrmc_table(osrm, params, c.byref(osrmc_error()))
+    yield table
+    lib.osrmc_table_response_destruct(table)
 
 
 @contextmanager
