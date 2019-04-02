@@ -268,7 +268,7 @@ class OSRM:
                 else:
                     return None
 
-    def table(self, coordinates):
+    def table(self, coordinates, sources=None):
         with scoped_table_params() as params:
             assert params
 
@@ -277,11 +277,12 @@ class OSRM:
 
             with scoped_table(self.osrm, params) as table:
                 if table:
-                    n = len(coordinates)  # Only symmetric version supported
+                    n = len(coordinates)
+                    src_idxs = sources if sources else range(n)
                     return Table([(coordinates[s].id, coordinates[t].id,
                                    lib.osrmc_table_response_duration(table, s, t, c.byref(osrmc_error())),
                                    lib.osrmc_table_response_distance(table, s, t, c.byref(osrmc_error()))
-                                   ) for t in range(n)] for s in range(n))
+                                   ) for t in range(n)] for s in src_idxs)
                 else:
                     return None
 
