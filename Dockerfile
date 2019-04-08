@@ -31,8 +31,8 @@ RUN cd ${BUILD_DIR} \
   && mkdir -p build \
   && cd build \
   && cmake .. -DCMAKE_BUILD_TYPE=Release \
-  && cmake --build . \
-  && cmake --build . --target install
+  && cmake --build . -- -j $(nproc) \
+  && cmake --build . --target install -- -j $(nproc)
 
 # Install Python requirements
 RUN cd ${BUILD_DIR} \

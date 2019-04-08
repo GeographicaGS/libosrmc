@@ -1,0 +1,8 @@
+FROM geographica/osrmcpy:latest
+
+# Environment
+ENV BUILD_DIR /usr/src
+
+WORKDIR /usr/local/app
+
+RUN pip install jupyterlab>=0.35
