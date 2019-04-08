@@ -6,7 +6,16 @@ This repository is Geographica version of libosrmc, focused only on Python 3 bin
 
 ### Building
 
-First you must build Docker container:
+First you must build base Docker image:
+
+```
+$ cd docker
+$ docker build --pull -t geographica/osrmcpy:latest .
+```
+
+### Running with Jupyter
+
+You must build your Docker container with Docker-Compose:
 
 ```
 $ docker-compose build
