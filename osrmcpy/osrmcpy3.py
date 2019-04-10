@@ -77,6 +77,10 @@ lib.osrmc_params_add_coordinate.restype = None
 lib.osrmc_params_add_coordinate.argtypes = [c.c_void_p, c.c_float, c.c_float, c.c_void_p]
 lib.osrmc_params_add_coordinate.errcheck = osrmc_error_errcheck
 
+lib.osrmc_params_exclude.restype = None
+lib.osrmc_params_exclude.argtypes = [c.c_void_p, c.c_char_p, c.c_void_p]
+lib.osrmc_params_exclude.errcheck = osrmc_error_errcheck
+
 # Route Params
 lib.osrmc_route_params_construct.restype = c.c_void_p
 lib.osrmc_route_params_construct.argtypes = [c.c_void_p]
@@ -286,9 +290,12 @@ class OSRM:
                 else:
                     return None
 
-    def nearest(self, coordinate):
+    def nearest(self, coordinate, exclude=None):
         with scoped_nearest_params() as params:
             assert params
+
+            if exclude:
+                lib.osrmc_params_exclude(params, exclude.encode('utf-8'), c.byref(osrmc_error()))
 
             lib.osrmc_params_add_coordinate(params, coordinate.longitude, coordinate.latitude, c.byref(osrmc_error()))
 
