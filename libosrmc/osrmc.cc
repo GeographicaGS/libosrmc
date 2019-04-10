@@ -140,6 +140,13 @@ void osrmc_params_add_coordinate_with(osrmc_params_t params, float longitude, fl
   *error = new osrmc_error{e.what()};
 }
 
+void osrmc_params_exclude(osrmc_params_t params, const char* excluded_class, osrmc_error_t* error) try {
+  auto* params_typed = reinterpret_cast<osrm::engine::api::BaseParameters*>(params);
+
+  params_typed->exclude.emplace_back(std::move(excluded_class));
+} catch (const std::exception& e) {
+  *error = new osrmc_error{e.what()};
+}
 
 /* Route service */
 

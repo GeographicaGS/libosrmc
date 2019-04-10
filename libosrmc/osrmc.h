@@ -213,6 +213,7 @@ OSRMC_API void osrmc_params_add_coordinate(osrmc_params_t params, float longitud
                                            osrmc_error_t* error);
 OSRMC_API void osrmc_params_add_coordinate_with(osrmc_params_t params, float longitude, float latitude, float radius,
                                                 int bearing, int range, osrmc_error_t* error);
+OSRMC_API void osrmc_params_exclude(osrmc_params_t params, const char* excluded_class, osrmc_error_t* error);
 
 
 /* Route service */
