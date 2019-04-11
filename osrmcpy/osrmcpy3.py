@@ -303,6 +303,6 @@ class OSRM:
                 if nearest:
                     nearest_coord = (c.c_float * 2)()
                     lib.osrmc_nearest_response_coordinates(nearest, nearest_coord, c.byref(osrmc_error()))
-                    return Coordinate(id=None, latitude=nearest_coord[0], longitude=nearest_coord[1])
+                    return Coordinate(id=coordinate.id, latitude=nearest_coord[0], longitude=nearest_coord[1])
                 else:
                     return None
