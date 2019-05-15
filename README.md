@@ -73,16 +73,38 @@ You have scripts in data folder to generate test datasets for three locations:
 - Spain (large)
 - France (extra large)
 
-### Using the API
+#### Notes on procesing data
 
-Up Docker container:
+Here is the information related to the performance procesing the data for France
+
 ```
-$ docker-compose up osrmcpy
+8 x Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz
+Mem:       16GB
+Swap:       2GB
+
+france-latest.osm.pbf  3.43G
+
+--Processing - osm-extract...
+RAM: peak bytes used: 12157050880
+time: 13m23.498s
+
+--Processing - osrm-contract...
+RAM: peak bytes used: 5705818112
+time: 40m27.110s
+
+france_osrm_ch/ 7.5G
 ```
+
+### Using the API
 
 Launch the API pointing to an osrm file
 ```
-$ docker-compose exec osrmcpy bash -c "osrm-routed /usr/local/app/data/osrm/france_osrm_ch/france-latest.osrm"
+$ docker-compose run --service-ports osrmcpy osrm-routed ./data/osrm/france_osrm_ch/france-latest.osrm
+```
+
+Example
+```
+http://localhost:5050/table/v1/car/3.081427,48.809148;3.243775,48.811817;3.228700,48.759358;3.230363,48.800354?sources=0&annotations=distance,duration
 ```
 
 ## Building without Docker
