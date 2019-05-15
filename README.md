@@ -13,19 +13,31 @@ $ cd docker
 $ docker build --pull -t geographica/osrmcpy:latest .
 ```
 
-### Running with Jupyter
+#### Running with Jupyter
 
 You must build your Docker container with Docker-Compose:
 
 ```
-$ docker-compose build
+$ docker-compose build osrmcpy-jupyter
 ```
 
-### Up and running
+This container exposes the internal port 8888 to the host port 8889.
+
+#### Running without Jupyter
+
+You must build your Docker container with Docker-Compose:
+
+```
+$ docker-compose build osrmcpy
+```
+
+This container exposes the internal port 5000 to the host port 5050.
+
+### Jupyter up and running
 
 Up Docker container:
 ```
-$ docker-compose up
+$ docker-compose up osrmcpy-jupyter
 ```
 
 And and use these examples through JupyterLab in ```http://localhost:8888```:
@@ -46,19 +58,32 @@ Preprocessing pipelines to generate test data:
 
 - CH pipeline example:
 ```
-$ docker-compose exec osrmcpy-jupyter bash -c 'cd data && ./preprocessing_monaco.sh'
+$ docker-compose exec osrmcpy bash -c 'cd data && ./preprocessing_monaco.sh'
 ```
 
 - MLD pipeline example:
 ```
-$ docker-compose exec osrmcpy-jupyter bash -c 'cd data && ./preprocessing_monaco.sh MLD'
+$ docker-compose exec osrmcpy bash -c 'cd data && ./preprocessing_monaco.sh MLD'
 ```
 
 You have scripts in data folder to generate test datasets for three locations:
 - Monaco (little)
 - Berlin (medium)
 - Ireland (moderately large)
+- Spain (large)
+- France (extra large)
 
+### Using the API
+
+Up Docker container:
+```
+$ docker-compose up osrmcpy
+```
+
+Launch the API pointing to an osrm file
+```
+$ docker-compose exec osrmcpy bash -c "osrm-routed /usr/local/app/data/osrm/france_osrm_ch/france-latest.osrm"
+```
 
 ## Building without Docker
 
