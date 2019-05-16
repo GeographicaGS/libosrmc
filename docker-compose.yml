@@ -1,5 +1,6 @@
 version: '3'
 services:
+
   osrmcpy-jupyter:
     build:
       context: .
@@ -9,3 +10,15 @@ services:
     ports:
       - '8889:8888'
     command: jupyter lab --NotebookApp.token= --ip=0.0.0.0 --no-browser --allow-root
+
+  osrmcpy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: ./config.env
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/usr/local/app
+    ports:
+      - '5050:5000'

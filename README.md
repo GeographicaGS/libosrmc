@@ -13,19 +13,31 @@ $ cd docker
 $ docker build --pull -t geographica/osrmcpy:latest .
 ```
 
-### Running with Jupyter
+#### Running with Jupyter
 
 You must build your Docker container with Docker-Compose:
 
 ```
-$ docker-compose build
+$ docker-compose build osrmcpy-jupyter
 ```
 
-### Up and running
+This container exposes the internal port 8888 to the host port 8889.
+
+#### Running without Jupyter
+
+You must build your Docker container with Docker-Compose:
+
+```
+$ docker-compose build osrmcpy
+```
+
+This container exposes the internal port 5000 to the host port 5050.
+
+### Jupyter up and running
 
 Up Docker container:
 ```
-$ docker-compose up
+$ docker-compose up osrmcpy-jupyter
 ```
 
 And and use these examples through JupyterLab in ```http://localhost:8888```:
@@ -46,19 +58,54 @@ Preprocessing pipelines to generate test data:
 
 - CH pipeline example:
 ```
-$ docker-compose exec osrmcpy-jupyter bash -c 'cd data && ./preprocessing_monaco.sh'
+$ docker-compose exec osrmcpy bash -c 'cd data && ./preprocessing_monaco.sh'
 ```
 
 - MLD pipeline example:
 ```
-$ docker-compose exec osrmcpy-jupyter bash -c 'cd data && ./preprocessing_monaco.sh MLD'
+$ docker-compose exec osrmcpy bash -c 'cd data && ./preprocessing_monaco.sh MLD'
 ```
 
 You have scripts in data folder to generate test datasets for three locations:
 - Monaco (little)
 - Berlin (medium)
 - Ireland (moderately large)
+- Spain (large)
+- France (extra large)
 
+#### Notes on procesing data
+
+Here is the information related to the performance procesing the data for France
+
+```
+8 x Intel(R) Core(TM) i7-8550U CPU @ 1.80GHz
+Mem:       16GB
+Swap:       2GB
+
+france-latest.osm.pbf  3.43G
+
+--Processing - osm-extract...
+RAM: peak bytes used: 12157050880
+time: 13m23.498s
+
+--Processing - osrm-contract...
+RAM: peak bytes used: 5705818112
+time: 40m27.110s
+
+france_osrm_ch/ 7.5G
+```
+
+### Using the API
+
+Launch the API pointing to an osrm file
+```
+$ docker-compose run --service-ports osrmcpy osrm-routed ./data/osrm/france_osrm_ch/france-latest.osrm
+```
+
+Example
+```
+http://localhost:5050/table/v1/car/3.081427,48.809148;3.243775,48.811817;3.228700,48.759358;3.230363,48.800354?sources=0&annotations=distance,duration
+```
 
 ## Building without Docker
 
