@@ -31,8 +31,12 @@ import ctypes as c
 from collections import namedtuple
 from contextlib import contextmanager
 
+# The path of shared libraries is defined in 
+# PREFIX variable in config.mk
+LD_LIBRARY_PATH = '/usr/local/lib/'
+
 # Native Functions Bridge
-lib = c.CDLL('libosrmc.so')
+lib = c.CDLL(f'{LD_LIBRARY_PATH}libosrmc.so')
 
 # Error handling
 lib.osrmc_error_message.restype = c.c_char_p
