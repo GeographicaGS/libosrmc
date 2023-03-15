@@ -1,25 +1,54 @@
-import sys
+'''Script to calculate a point-to-point route.'''
+import argparse
+import pathlib
 
 import pandas as pd
-
 from osrmcpy import OSRM, Coordinate
 
 
-# Example User Code
+def parse_command():
+    """Create a parser for this script."""
+    parser = argparse.ArgumentParser(
+        prog='Point-to-Point route.',
+        description='Computes a point to point route optimization.',
+    )
+
+    parser.add_argument(
+        '-s', '--start',
+        required=True,
+        nargs=2,
+        type=float,
+        help='Route start point as coordinates (longitude, latitude) tuple.',
+    )
+    parser.add_argument(
+        '-e', '--end',
+        required=True,
+        nargs=2,
+        type=float,
+        help='Route end point as coordinates (longitude, latitude) tuple.',
+    )
+    parser.add_argument(
+        '-O', '--osrm',
+        required=True,
+        type=pathlib.Path,
+        help='OSRM data base path.'
+    )
+
+    return parser
+
+
 def main():
-    if '--help' in sys.argv or '-h' in sys.argv:
-        sys.exit('Usage: {} [OSRM data base path]'.format(sys.argv[0]))
+    parser = parse_command()
+    args = parser.parse_args()
 
-    osrm = OSRM(sys.argv[1].encode('utf-8') if len(sys.argv) >= 2 else None, True)
+    osrm_path = str(args.osrm.resolve())
+    route_start = args.start
+    route_end = args.end
 
-    # Berlin
-    # start = Coordinate(id=None, longitude=13.14117, latitude=52.41445)
-    # end = Coordinate(id=None, longitude=13.55747, latitude=52.61437)
-    # Ireland
-    # start = Coordinate(id=None, longitude=-6.346509195699211, latitude=53.36407603954265)
-    # end = Coordinate(id=None, longitude=-6.35272995922493, latitude=53.283447477339756)
-    start = Coordinate(id=None, longitude=-6.278496849370723, latitude=53.321071624603135)
-    end = Coordinate(id=None, longitude=-6.462316552050708, latitude=53.31210678760515)
+    osrm = OSRM(osrm_path.encode('utf-8'), True)
+
+    start = Coordinate(id=None, longitude=route_start[0], latitude=route_start[1])
+    end = Coordinate(id=None, longitude=route_end[0], latitude=route_end[1])
 
     csv_path = "geometries_output.csv"
     route = osrm.route([start, end], csv_path=csv_path.encode('utf-8'))
